@@ -1,39 +1,44 @@
 class MessagesController < ApplicationController
+  before_action :set_chat_and_application
   before_action :set_message, only: %i[ show update destroy ]
 
-  # GET /messages
+  # GET /applications/:application_token/chats/:chat_number/messages
   def index
-    @messages = Message.all
+    @messages = Message.where(chat_id: @chat.id).order(number: :desc)
 
     render json: @messages
   end
 
-  # GET /messages/1
+  # GET /applications/:application_token/chats/:chat_number/messages/:number
   def show
     render json: @message
   end
 
-  # POST /messages
+  # POST /applications/:application_token/chats/:chat_number/messages
   def create
-    @message = Message.new(message_params)
+    @user = User.find_by(username: params[:username])
+
+    latest_number = Message.where(chat_id: @chat.id).maximum(:number) || 0
+
+    @message = Message.new(create_message_params.merge(chat_id: @chat.id, user_id: @user.id, number: latest_number + 1))
 
     if @message.save
-      render json: @message, status: :created, location: @message
+      render json: @message, status: :created, location: application_chat_message_url(@chat, @message, @application)
     else
       render json: @message.errors, status: :unprocessable_entity
     end
   end
 
-  # PATCH/PUT /messages/1
+  # PATCH/PUT /applications/:application_token/chats/:chat_number/messages/:number
   def update
-    if @message.update(message_params)
+    if @message.update(update_message_params)
       render json: @message
     else
       render json: @message.errors, status: :unprocessable_entity
     end
   end
 
-  # DELETE /messages/1
+  # DELETE /applications/:application_token/chats/:chat_number/messages/:number
   def destroy
     @message.destroy!
   end
@@ -41,11 +46,20 @@ class MessagesController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_message
-      @message = Message.find(params[:id])
+      @message = Message.find_by(chat_id: @chat.id, number: params[:number])
+    end
+
+    def set_chat_and_application
+      @application = Application.find_by(token: params[:application_token])
+      @chat = Chat.find_by(application_id: @application.id, number: params[:chat_number])
     end
 
     # Only allow a list of trusted parameters through.
-    def message_params
-      params.require(:message).permit(:body, :number, :user_id, :chat_id)
+    def create_message_params
+      params.require(:message).permit(:body, :username)
+    end
+
+    def update_message_params
+      params.require(:message).permit(:body)
     end
 end

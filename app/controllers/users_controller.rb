@@ -8,7 +8,7 @@ class UsersController < ApplicationController
     render json: @users
   end
 
-  # GET /users/1
+  # GET /users/username
   def show
     render json: @user
   end
@@ -24,7 +24,7 @@ class UsersController < ApplicationController
     end
   end
 
-  # PATCH/PUT /users/1
+  # PATCH/PUT /users/username
   def update
     if @user.update(user_params)
       render json: @user
@@ -33,15 +33,19 @@ class UsersController < ApplicationController
     end
   end
 
-  # DELETE /users/1
+  # DELETE /users/username
   def destroy
-    @user.destroy!
+    if @user
+      @user.destroy!
+    else
+      render json: { error: 'User not found' }, status: :not_found
+    end
   end
 
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_user
-      @user = User.find(params[:id])
+      @user = User.find_by(username: params[:username])
     end
 
     # Only allow a list of trusted parameters through.
