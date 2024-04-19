@@ -15,7 +15,9 @@ class ApplicationsController < ApplicationController
 
   # POST /applications
   def create
-    @application = Application.new(application_params)
+    while Application.find_by(token: random_hash = Digest::SHA256.hexdigest(Time.now.to_s)[0..9])
+    end
+    @application = Application.new(application_params.merge(token: random_hash))
 
     if @application.save
       render json: @application, status: :created, location: @application
@@ -46,6 +48,6 @@ class ApplicationsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def application_params
-      params.require(:application).permit(:name, :token, :chats_count)
+      params.require(:application).permit(:name)
     end
 end
