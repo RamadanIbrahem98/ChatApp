@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_04_19_170650) do
+ActiveRecord::Schema[7.1].define(version: 2024_04_19_171240) do
   create_table "applications", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name", null: false
     t.string "token", null: false
@@ -30,6 +30,19 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_19_170650) do
     t.index ["number", "application_id"], name: "index_chats_on_number_and_application_id", unique: true
   end
 
+  create_table "messages", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.text "body"
+    t.integer "number", null: false
+    t.bigint "user_id", null: false
+    t.bigint "chat_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["body"], name: "index_messages_on_body", type: :fulltext
+    t.index ["chat_id"], name: "index_messages_on_chat_id"
+    t.index ["number", "chat_id"], name: "index_messages_on_number_and_chat_id", unique: true
+    t.index ["user_id"], name: "index_messages_on_user_id"
+  end
+
   create_table "users", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "username", null: false
     t.datetime "created_at", null: false
@@ -38,4 +51,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_19_170650) do
   end
 
   add_foreign_key "chats", "applications"
+  add_foreign_key "messages", "chats"
+  add_foreign_key "messages", "users"
 end
