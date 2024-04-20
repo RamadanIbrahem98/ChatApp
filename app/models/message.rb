@@ -1,4 +1,6 @@
 class Message < ApplicationRecord
+  include Searchable
+
   belongs_to :user
   belongs_to :chat
 
