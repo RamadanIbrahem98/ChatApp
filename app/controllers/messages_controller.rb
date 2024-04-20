@@ -9,6 +9,15 @@ class MessagesController < ApplicationController
     render json: @messages
   end
 
+  # GET /applications/:application_token/chats/:chat_number/messages/search?q=foo
+  def search
+    @messages = Message.search(params[:q])
+
+    @messages = @messages.where(chat_id: @chat.id)
+
+    render json: @messages
+  end
+
   # GET /applications/:application_token/chats/:chat_number/messages/:number
   def show
     render json: @message

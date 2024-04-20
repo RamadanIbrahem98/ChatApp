@@ -4,7 +4,9 @@ Rails.application.routes.draw do
       resources :users, param: :username
       resources :applications, param: :token do
         resources :chats, param: :number do
-          resources :messages, param: :number
+          resources :messages, param: :number do
+            get 'search', to: 'messages#search', on: :collection
+          end
         end
       end
     end
