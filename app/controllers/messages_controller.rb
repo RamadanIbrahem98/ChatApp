@@ -25,17 +25,10 @@ class MessagesController < ApplicationController
 
   # POST /applications/:application_token/chats/:chat_number/messages
   def create
-    @user = User.find_by(username: params[:username])
+    # this route is temporary, it will be processed by the action cable later
+    @message = CreateMessageJob.perform_async(@application.token, @chat.number, current_user.username, create_message_params[:body])
 
-    latest_number = Message.where(chat_id: @chat.id).maximum(:number) || 0
-
-    @message = Message.new(create_message_params.merge(chat_id: @chat.id, user_id: @user.id, number: latest_number + 1))
-
-    if @message.save
-      render json: @message, status: :created, location: application_chat_message_url(@chat, @message, @application)
-    else
-      render json: @message.errors, status: :unprocessable_entity
-    end
+    render json: { "msg": "message is being processed" }, status: :created
   end
 
   # PATCH/PUT /applications/:application_token/chats/:chat_number/messages/:number
