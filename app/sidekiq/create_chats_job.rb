@@ -5,5 +5,6 @@ class CreateChatsJob
   def perform(application_token)
     @application = Application.find_by(token: application_token)
     Chat.custom_create!(application_id: @application.id)
+    CalculateTotalsCronJob.perform_async({"type"=> "chats", "application_id"=> @application.id})
   end
 end

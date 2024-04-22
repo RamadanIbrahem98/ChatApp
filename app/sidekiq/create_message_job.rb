@@ -8,6 +8,7 @@ class CreateMessageJob
     @user = User.find_by(username: username)
     begin
       Message.custom_create!(body: body, user_id: @user.id, chat_id: @chat.id)
+      CalculateTotalsCronJob.perform_async({"type"=> "messages", "application_id"=> @application.id, "number"=> @chat.number})
     rescue Faraday::ConnectionFailed => e
       if e.message.include?(":9200")
         puts "Elasticsearch is down"

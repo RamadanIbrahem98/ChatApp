@@ -3,11 +3,11 @@ class CalculateTotalsCronJob
   queue_as :default
 
   def perform(args = {})
-    if args["type"] == "chats" and args["application_token"] != nil
-      application = Application.find_by(token: args["application_token"])
+    if args["type"] == "chats" and args["application_id"] != nil
+      application = Application.find(args["application_id"])
       application.update!(chats_count: application.chats.count)
-    elsif args["type"] == "messages" and args["application_token"] != nil and args["number"] != nil
-      chat = Chat.find_by(application_id: args["application_token"], number: args["number"])
+    elsif args["type"] == "messages" and args["application_id"] != nil and args["number"] != nil
+      chat = Chat.find_by(application_id: args["application_id"], number: args["number"])
       chat.update!(messages_count: chat.messages.count)
     elsif args.blank?
       calculate_total_chats
