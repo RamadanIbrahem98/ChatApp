@@ -23,14 +23,6 @@ class MessagesController < ApplicationController
     render json: @message
   end
 
-  # POST /applications/:application_token/chats/:chat_number/messages
-  def create
-    # this route is temporary, it will be processed by the action cable later
-    @message = CreateMessageJob.perform_async(@application.token, @chat.number, current_user.username, create_message_params[:body])
-
-    render json: { "msg": "message is being processed" }, status: :created
-  end
-
   # PATCH/PUT /applications/:application_token/chats/:chat_number/messages/:number
   def update
     if @message.update(update_message_params)
