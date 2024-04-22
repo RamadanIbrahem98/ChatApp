@@ -41,7 +41,6 @@ ws.on('message', function message(data) {
       data: JSON.stringify({
         action: 'receive',
         body: 'Hello, Chat',
-        username: 'ramadan11',
       }),
     });
 
