@@ -1,6 +1,6 @@
 class CreateChatsJob
   include Sidekiq::Job
-  queue_as :messages
+  queue_as :chats
 
   def perform(application_token)
     @application = Application.find_by(token: application_token)
