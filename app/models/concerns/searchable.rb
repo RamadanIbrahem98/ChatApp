@@ -14,7 +14,7 @@ module Searchable
         query: {
           bool: {
             should: [
-              { match: { body: { query: query, operator: 'and', fuzziness: 5 } } },
+              { match: { body: { query: query, operator: 'and', fuzziness: 2 } } },
               { wildcard: { body: { value: "*#{query}*" } } }
             ]
           }
