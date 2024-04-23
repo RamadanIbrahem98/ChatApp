@@ -12,7 +12,7 @@ class ApplicationChannel < ApplicationCable::Channel
 
     CreateChatsJob.perform_async(application.token)
 
-    ActionCable.server.broadcast("application#{params[:application_token]}", { message: "A new chat has been created for application #{application.token}"})
+    ActionCable.server.broadcast("application_#{params[:application_token]}", { message: "A new chat has been created for application #{application.token}"})
   end
 
 
