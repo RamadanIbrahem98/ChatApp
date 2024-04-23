@@ -6,18 +6,26 @@ class ChatsController < ApplicationController
   def index
     @chats = Chat.where(application_id: @application.id).order(:number)
 
-    render json: @chats
+    if @chats.empty?
+      render json: { message: 'No chats found' }, status: :ok
+    else
+      render json: { data: @chats, message: 'Chats found' }, status: :ok
+    end
   end
 
   # GET /applications/:application_token/chats/:number
   def show
-    render json: @chat
+    if @chat.nil?
+      render json: { message: 'Chat not found' }, status: :ok
+    else
+      render json: { data: @chat, message: 'Chat found' }, status: :ok
+    end
   end
 
   # PATCH/PUT /applications/:application_token/chats/:number
   def update
     if @chat.update(chat_params)
-      render json: @chat
+      render json: { data: @chat, message: "Chat updated" }, status: :ok
     else
       render json: @chat.errors, status: :unprocessable_entity
     end
@@ -26,6 +34,7 @@ class ChatsController < ApplicationController
   # DELETE /applications/:application_token/chats/:number
   def destroy
     @chat.destroy!
+    render json: { message: "Chat deleted" }, status: :ok
   end
 
   private
