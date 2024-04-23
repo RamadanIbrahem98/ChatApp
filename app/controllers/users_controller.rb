@@ -5,12 +5,20 @@ class UsersController < ApplicationController
   def index
     @users = User.all
 
-    render json: @users
+    if @users.empty?
+      render json: { error: 'No users found' }, status: :ok
+    else
+      render json: { data: @users, message: 'Users found' }, status: :ok
+    end
   end
 
   # GET /users/username
   def show
-    render json: @user
+    if @user.nil?
+      render json: { error: 'User not found' }, status: :not_found
+    else
+      render json: @user
+    end
   end
 
   # POST /users
@@ -18,7 +26,7 @@ class UsersController < ApplicationController
     @user = User.create!(user_params)
 
     if @user.save
-      render json: @user, status: :created, location: @user
+      render json: { data: @user, message: "User created" }, status: :created, location: @user
     else
       render json: @user.errors, status: :unprocessable_entity
     end
@@ -37,6 +45,7 @@ class UsersController < ApplicationController
   def destroy
     if @user
       @user.destroy!
+      render json: { message: 'User deleted' }, status: :ok
     else
       render json: { error: 'User not found' }, status: :not_found
     end
