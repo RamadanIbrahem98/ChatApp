@@ -12,7 +12,7 @@ class ChatChannel < ApplicationCable::Channel
     chat = Chat.find_by(application_id: application.id, number: params[:chat_number])
     CreateMessageJob.perform_async(application.token, chat.number, current_user.username, data["body"])
 
-    ActionCable.server.broadcast("application#{params[:application_token]}_chat_#{params[:chat_number]}", data.merge({ username: current_user.username }))
+    ActionCable.server.broadcast("application_#{params[:application_token]}_chat_#{params[:chat_number]}", data.merge({ username: current_user.username }))
   end
 
   private
