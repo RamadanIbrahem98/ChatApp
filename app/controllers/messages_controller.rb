@@ -6,7 +6,11 @@ class MessagesController < ApplicationController
   def index
     @messages = Message.where(chat_id: @chat.id).order(number: :desc)
 
-    render json: @messages
+    if @messages.empty?
+      render json: { message: 'No messages found' }, status: :ok
+    else
+      render json: { data: @messages, message: 'Messages found' }, status: :ok
+    end
   end
 
   # GET /applications/:application_token/chats/:chat_number/messages/search?q=foo
@@ -15,18 +19,26 @@ class MessagesController < ApplicationController
 
     @messages = @messages.where(chat_id: @chat.id)
 
-    render json: @messages
+    if @messages.empty?
+      render json: { message: 'No messages found' }, status: :ok
+    else
+      render json: { data: @messages, message: 'Messages found' }, status: :ok
+    end
   end
 
   # GET /applications/:application_token/chats/:chat_number/messages/:number
   def show
-    render json: @message
+    if @message.nil?
+      render json: { message: 'Message not found' }, status: :ok
+    else
+      render json: { data: @message, message: 'Message found' }, status: :ok
+    end
   end
 
   # PATCH/PUT /applications/:application_token/chats/:chat_number/messages/:number
   def update
     if @message.update(update_message_params)
-      render json: @message
+      render json: { data: @message, message: "Message updated" }, status: :ok
     else
       render json: @message.errors, status: :unprocessable_entity
     end
@@ -35,6 +47,7 @@ class MessagesController < ApplicationController
   # DELETE /applications/:application_token/chats/:chat_number/messages/:number
   def destroy
     @message.destroy!
+    render json: { message: "Message deleted" }, status: :ok
   end
 
   private
