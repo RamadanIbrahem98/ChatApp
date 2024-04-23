@@ -24,7 +24,7 @@ Devise.setup do |config|
   # confirmation, reset password and unlock tokens in the database.
   # Devise will use the `secret_key_base` as its `secret_key`
   # by default. You can change it below and use your own secret key.
-  # config.secret_key = '96fdf0d1c34481da1e41f06f74eae7fa51f399f530cbf27403872cfac9d85477b5314cbe67eeca01b9e31072d914c282a82a0543fc61e726f1ff3af3fe41f3a1'
+  # config.secret_key = '7d01899167bd88b675aaa7cae948912f695079daf4ded2a23ea37a8a7d12b21c28f56dd82a5dbc91937cae447a85a3d4c1ecbf42e80daf6822f63a7dde9adb22'
 
   # ==> Controller configuration
   # Configure the parent class to the devise controllers.
@@ -107,7 +107,7 @@ Devise.setup do |config|
   # Notice that if you are skipping storage for all authentication paths, you
   # may want to disable generating routes to Devise's sessions controller by
   # passing skip: :sessions to `devise_for` in your config/routes.rb
-  config.skip_session_storage = [:http_auth]
+  config.skip_session_storage = [:http_auth, :params_auth]
 
   # By default, Devise cleans up the CSRF token on authentication to
   # avoid CSRF token fixation attacks. This means that, when using AJAX
@@ -136,7 +136,7 @@ Devise.setup do |config|
   config.stretches = Rails.env.test? ? 1 : 12
 
   # Set up a pepper to generate the hashed password.
-  # config.pepper = 'e5ec77e507ae338cb88c8825a2f2771bdefcfa70a4c0fc3c7194de3376fd3e2cc8c28ab067bcfa525d89d9cb43c4a32d7bfa41b842bb540475a3035aa624fb2e'
+  # config.pepper = 'b8c6acbbe4d6017e1802444942dafc2e2513ab23955dfcfab29762aeb979568f5dc58d5f7e7e3cc716380fe71f20cbb129b14d01c27a211ebe0cee9f7e7c8044'
 
   # Send a notification to the original email when the user's email is changed.
   # config.send_email_changed_notification = false
@@ -273,7 +273,7 @@ Devise.setup do |config|
   # should add them to the navigational formats lists.
   #
   # The "*/*" below is required to match Internet Explorer requests.
-  # config.navigational_formats = ['*/*', :html, :turbo_stream]
+  config.navigational_formats = []
 
   # The default HTTP method used to sign out a resource. Default is :delete.
   config.sign_out_via = :delete
@@ -312,8 +312,8 @@ Devise.setup do |config|
   # apps is `200 OK` and `302 Found` respectively, but new apps are generated with
   # these new defaults that match Hotwire/Turbo behavior.
   # Note: These might become the new default in future versions of Devise.
-  config.responder.error_status = :unprocessable_entity
-  config.responder.redirect_status = :see_other
+  # config.responder.error_status = :unprocessable_entity
+  # config.responder.redirect_status = :see_other
 
   # ==> Configuration for :registerable
 
