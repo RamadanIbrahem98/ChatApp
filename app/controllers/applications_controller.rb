@@ -5,12 +5,20 @@ class ApplicationsController < ApplicationController
   def index
     @applications = Application.all
 
-    render json: @applications
+    if @applications.empty?
+      render json: { message: 'No applications found' }, status: :ok
+    else
+      render json: { data: @applications, message: 'Applications found' }, status: :ok
+    end
   end
 
   # GET /applications/token
   def show
-    render json: @application
+    if @application.nil?
+      render json: { message: 'Application not found' }, status: :ok
+    else
+      render json: { data: @application, message: 'Application found' }, status: :ok
+    end
   end
 
   # POST /applications
@@ -20,7 +28,7 @@ class ApplicationsController < ApplicationController
     @application = Application.new(application_params.merge(token: random_hash))
 
     if @application.save
-      render json: @application, status: :created, location: @application
+      render json: { data: @application, message: "Application created" }, status: :created, location: @application
     else
       render json: @application.errors, status: :unprocessable_entity
     end
@@ -29,7 +37,7 @@ class ApplicationsController < ApplicationController
   # PATCH/PUT /applications/token
   def update
     if @application.update(application_params)
-      render json: @application
+      render json: { data: @application, message: "Application updated" }, status: :ok
     else
       render json: @application.errors, status: :unprocessable_entity
     end
@@ -38,6 +46,7 @@ class ApplicationsController < ApplicationController
   # DELETE /applications/token
   def destroy
     @application.destroy!
+    render json: { message: "Application deleted" }, status: :ok
   end
 
   private
