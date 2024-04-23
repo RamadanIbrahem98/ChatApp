@@ -10,9 +10,7 @@ class ApplicationChannel < ApplicationCable::Channel
   def receive(data)
     application = Application.find_by(token: params[:application_token])
 
-    CreateChatsJob.perform_async(application.token)
-
-    ActionCable.server.broadcast("application_#{params[:application_token]}", { message: "A new chat has been created for application #{application.token}"})
+    CreateChatJob.perform_later(application.token)
   end
 
 
