@@ -1,6 +1,6 @@
 class Chat < ApplicationRecord
   belongs_to :application
-  has_many :messages
+  has_many :messages, dependent: :destroy
 
   scope :last_number_by_application, -> (application_id) { where(application_id: application_id).order(number: :desc).limit(1).pluck(:number).first.to_i rescue 0 }
 
