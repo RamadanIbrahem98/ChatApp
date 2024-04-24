@@ -1,4 +1,5 @@
 class MessagesController < ApplicationController
+  before_action :authenticate_user!
   before_action :set_chat_and_application
   before_action :set_message, only: %i[ show update destroy ]
 
@@ -46,8 +47,23 @@ class MessagesController < ApplicationController
 
   # DELETE /applications/:application_token/chats/:chat_number/messages/:number
   def destroy
-    @message.destroy!
-    render json: { message: "Message deleted" }, status: :ok
+    if current_user.nil?
+      return render json: { message: "You must be logged in to delete a message" }, status: :unauthorized
+    end
+
+    if @message.nil?
+      return render json: { message: "Message not found" }, status: :not_found
+    end
+
+    user = User.find_by(username: current_user.username)
+
+    if user.id != @message.user_id
+      return render json: { message: "You can only delete your own messages" }, status: :unauthorized
+    else
+      puts user.id != @message.user_id, user.id, @message.user_id
+      # @message.destroy!
+      render json: { message: "Message deleted" }, status: :ok
+    end
   end
 
   private

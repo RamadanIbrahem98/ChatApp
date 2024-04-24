@@ -1,4 +1,5 @@
 class ChatsController < ApplicationController
+  before_action :authenticate_user!
   before_action :set_application
   before_action :set_chat, only: %i[ show update destroy ]
 

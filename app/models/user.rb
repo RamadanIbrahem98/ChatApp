@@ -1,5 +1,5 @@
 class User < ApplicationRecord
-  devise :database_authenticatable, :jwt_authenticatable, :registerable,
+  devise :database_authenticatable, :jwt_authenticatable, :registerable, :validatable,
           jwt_revocation_strategy: JwtDenylist
 
   has_many :messages
