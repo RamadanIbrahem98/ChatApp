@@ -45,6 +45,8 @@ Message.import force: true
 
 ## Problems faced
 
+All the problems I faced originated from a simple idea that the philosophy of `Ruby` and `Ruby on Rails` is new to me. The fact that I don't have control over the flow of every little thing that happens in the application is a bit frustrating and needs a little bit getting used to. But I'm glad I was able to solve all the problems I faced.
+
 ### Problem 1: Chat/Message number and Sidekiq isolation (Solved)
 
 When creating the message, I need to specify the message number in the chat room by simply incrementing the last message number by 1. This raises the problem of race conditions when two messages are created at the same time. This problem can be solved in different ways (make  serializable isolation level queries, optimistic locking), but I chose to use Sidekiq queues for some reason, and I was quite wrong to do that XD.
@@ -67,6 +69,8 @@ Caveat: When using the POST /signup route, the user is created but the response 
 
 After documenting the problem, I didn't want to give up on it, and fortunately, I found an [issue](https://github.com/waiting-for-dev/devise-jwt/issues/235#issuecomment-1680376388) that lead me to the solution.
 
+Finally I stumbled upon a [tutorial](https://dakotaleemartinez.com/tutorials/devise-jwt-api-only-mode-for-authentication/) that helped me a lot with the implementation of the authentication using Devise and Devise JWT. And I was able to make it work.
+
 ### Problem 3: Dockerize the application (Solved)
 
 I tried to dockerize the application in the development environment, but I couldn't be able to make it work. For some reason, the app contianer does not wait for the db container to be ready before starting the application. And even after the db container is ready, the app container does not connect to the db even though the configurations are right!
@@ -74,3 +78,17 @@ I tried to dockerize the application in the development environment, but I could
 When I tried running in the production environment, it worked perfectly. It connected successfully to the db container but the caveat is that now the connection requires an SSL certificate.
 
 After sometime debugging, I was able to make it work in the development environment. And I don't know why it didn't work before, but I'm glad it's working now.
+
+## Future Improvements
+
+### Implementing optimistic locking
+
+I used the message queue to order the messages comming into the action cable, but what if I have multiple action cables running in parallel? I need to implement optimistic locking to make sure that the message number is incremented correctly.
+
+### Upating and Deleting messages using ActionCable
+
+Right now, the user can only create messages through the action cable. If the user want to update/delete a previous message, he would need to use the REST endpoints for now. But I need to implement the ability to update and delete messages using ActionCable and broadcast the changes to the chat room.
+
+### Figuring out a better way to increment the total messages count and chat rooms count
+
+Right now, I'm using two triggers to increment the total messages count and chat rooms count. One after the create request and the other one by using a cron job. I need to figure out a better way to do that. Because the trigger by creating would exhaust the database if the chat room is very active. Maybe figure out a way to implement what is similar to the exponential backoff functionality of the most popular messaging applications.
