@@ -25,7 +25,7 @@ This is a simple chat API only application built using Ruby on Rails and ActionC
 
 ## Running the application
 
-In order to run the application, you only need to have Docker and Docker Compose installed on your machine. thats by simply cloning the repository and running the following command:
+In order to run the application, you only need to have Docker and Docker Compose installed on your machine. thats by simply cloning the repository, then renaming the `.env.example` to `.env` and change whatever necessary inside it (you can leave it as is) and running the following command:
 
 ```bash
 docker compose up
@@ -104,6 +104,14 @@ Right now, I'm using two triggers to increment the total messages count and chat
 ### Handling the Active Job and Sidekiq Errors
 
 Right now, I'm not handling the Active Job and Sidekiq errors. I need to implement a way to handle the errors by sending the error message to the user and maybe retry the job.
+
+### Configure a Cache Store
+
+I need to configure a cache store to cache the messages and chat rooms to reduce the database load.
+
+### Testing
+
+I need to write tests for the application.
 
 ## API Documentation
 
