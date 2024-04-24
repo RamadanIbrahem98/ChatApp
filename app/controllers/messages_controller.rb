@@ -29,11 +29,7 @@ class MessagesController < ApplicationController
 
   # GET /applications/:application_token/chats/:chat_number/messages/:number
   def show
-    if @message.nil?
-      render json: { message: 'Message not found' }, status: :ok
-    else
-      render json: { data: @message, message: 'Message found' }, status: :ok
-    end
+    render json: { data: @message, message: 'Message found' }, status: :ok
   end
 
   # PATCH/PUT /applications/:application_token/chats/:chat_number/messages/:number
@@ -51,17 +47,12 @@ class MessagesController < ApplicationController
       return render json: { message: "You must be logged in to delete a message" }, status: :unauthorized
     end
 
-    if @message.nil?
-      return render json: { message: "Message not found" }, status: :not_found
-    end
-
     user = User.find_by(username: current_user.username)
 
     if user.id != @message.user_id
       return render json: { message: "You can only delete your own messages" }, status: :unauthorized
     else
-      puts user.id != @message.user_id, user.id, @message.user_id
-      # @message.destroy!
+      @message.destroy!
       render json: { message: "Message deleted" }, status: :ok
     end
   end
@@ -70,11 +61,21 @@ class MessagesController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
     def set_message
       @message = Message.find_by(chat_id: @chat.id, number: params[:number])
+
+      if @message.nil?
+        return render json: { message: "Message not found" }, status: :not_found
+      end
     end
 
     def set_chat_and_application
       @application = Application.find_by(token: params[:application_token])
+      if @application.nil?
+        return render json: { message: "Application not found" }, status: :not_found
+      end
       @chat = Chat.find_by(application_id: @application.id, number: params[:chat_number])
+      if @chat.nil?
+        return render json: { message: "Chat not found" }, status: :not_found
+      end
     end
 
     # Only allow a list of trusted parameters through.

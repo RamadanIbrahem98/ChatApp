@@ -15,11 +15,7 @@ class ApplicationsController < ApplicationController
 
   # GET /applications/token
   def show
-    if @application.nil?
-      render json: { message: 'Application not found' }, status: :ok
-    else
-      render json: { data: @application, message: 'Application found' }, status: :ok
-    end
+    render json: { data: @application, message: 'Application found' }, status: :ok
   end
 
   # POST /applications
@@ -54,6 +50,10 @@ class ApplicationsController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
     def set_application
       @application = Application.find_by(token: params[:token])
+
+      if @application.nil?
+        return render json: { message: "Application not found" }, status: :not_found
+      end
     end
 
     # Only allow a list of trusted parameters through.

@@ -16,11 +16,7 @@ class ChatsController < ApplicationController
 
   # GET /applications/:application_token/chats/:number
   def show
-    if @chat.nil?
-      render json: { message: 'Chat not found' }, status: :ok
-    else
-      render json: { data: @chat, message: 'Chat found' }, status: :ok
-    end
+    render json: { data: @chat, message: 'Chat found' }, status: :ok
   end
 
   # PATCH/PUT /applications/:application_token/chats/:number
@@ -42,10 +38,18 @@ class ChatsController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
     def set_application
       @application = Application.find_by(token: params[:application_token])
+
+      if @application.nil?
+        return render json: { message: "Application not found" }, status: :not_found
+      end
     end
 
     def set_chat
       @chat = Chat.find_by(application_id: @application.id, number: params[:number])
+
+      if @chat.nil?
+        return render json: { message: "Chat not found" }, status: :not_found
+      end
     end
 
     # Only allow a list of trusted parameters through.
