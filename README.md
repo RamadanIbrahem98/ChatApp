@@ -43,6 +43,14 @@ and then run the following command inside the rails console:
 Message.import force: true
 ```
 
+If you ran into a problem where the app container says cannot connect to port 3000 and Exiting... just leave the container running and open a new terminal and run the following command:
+
+```bash
+docker compose exec app bash -c "rm -f /rails/tmp/pids/server.pid"
+```
+
+Maybe you can add this line to the ./bin/docker-entrypoint file to make sure that the server.pid file is removed every time the container is started. I have not tested it yet.
+
 ## Problems faced
 
 All the problems I faced originated from a simple idea that the philosophy of `Ruby` and `Ruby on Rails` is new to me. The fact that I don't have control over the flow of every little thing that happens in the application is a bit frustrating and needs a little bit getting used to. But I'm glad I was able to solve all the problems I faced.
@@ -92,3 +100,11 @@ Right now, the user can only create messages through the action cable. If the us
 ### Figuring out a better way to increment the total messages count and chat rooms count
 
 Right now, I'm using two triggers to increment the total messages count and chat rooms count. One after the create request and the other one by using a cron job. I need to figure out a better way to do that. Because the trigger by creating would exhaust the database if the chat room is very active. Maybe figure out a way to implement what is similar to the exponential backoff functionality of the most popular messaging applications.
+
+### Handling the Active Job and Sidekiq Errors
+
+Right now, I'm not handling the Active Job and Sidekiq errors. I need to implement a way to handle the errors by sending the error message to the user and maybe retry the job.
+
+## API Documentation
+
+The Postman API documentation is available at [https://documenter.getpostman.com/view/13215606/2sA3BrXqBq](https://documenter.getpostman.com/view/13215606/2sA3BrXqBq).
