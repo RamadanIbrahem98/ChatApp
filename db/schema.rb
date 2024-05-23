@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_04_24_065806) do
+ActiveRecord::Schema[7.1].define(version: 2024_04_20_165033) do
   create_table "applications", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name", null: false
     t.string "token", null: false
@@ -27,7 +27,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_24_065806) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["application_id", "number"], name: "index_chats_on_application_id_and_number", unique: true
-    t.index ["application_id"], name: "index_chats_on_application_id"
   end
 
   create_table "jwt_denylists", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -43,9 +42,9 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_24_065806) do
     t.bigint "chat_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["chat_id"], name: "index_messages_on_chat_id"
+    t.index ["chat_id"], name: "fk_rails_0f670de7ba"
     t.index ["number", "chat_id"], name: "index_messages_on_number_and_chat_id", unique: true
-    t.index ["user_id"], name: "index_messages_on_user_id"
+    t.index ["user_id"], name: "fk_rails_273a25a7a6"
   end
 
   create_table "users", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
