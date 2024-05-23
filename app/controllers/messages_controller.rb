@@ -18,8 +18,6 @@ class MessagesController < ApplicationController
   def search
     @messages = Message.search(params[:q])
 
-    @messages = @messages.where(chat_id: @chat.id)
-
     if @messages.empty?
       render json: { message: 'No messages found' }, status: :ok
     else
